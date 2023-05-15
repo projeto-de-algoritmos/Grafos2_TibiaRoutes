@@ -203,7 +203,7 @@ export const routes: City[] = [
     },
 ];
 
-export const dijkstra = (startCity: string, endCity: string) => {
+export const dijkstra = (start: string, end: string) => {
     const visited: { [city: string]: boolean } = {};
     const distances: { [city: string]: number } = {};
     const previous: { [city: string]: string | null } = {};
@@ -212,7 +212,7 @@ export const dijkstra = (startCity: string, endCity: string) => {
         distances[city.name] = Infinity;
         previous[city.name] = null;
     });
-    distances[startCity] = 0;
+    distances[start] = 0;
 
     while (true) {
         let closestCity: string | null = null;
@@ -247,7 +247,7 @@ export const dijkstra = (startCity: string, endCity: string) => {
     }
 
     const path: string[] = [];
-    let currentCity: string | null = endCity;
+    let currentCity: string | null = end;
     let weightSum = 0;
     while (currentCity !== null) {
         const previousCity = previous[currentCity];
