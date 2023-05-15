@@ -8,7 +8,7 @@ interface Connection {
     weight: number;
 }
 
-const routesI: City[] = [
+export const routes: City[] = [
     {
         name: 'Ab Dendriel',
         connections: [
@@ -203,7 +203,61 @@ const routesI: City[] = [
     },
 ];
 
-function dijkstra(start: City, end: City) {
+export const dijkstra = (startCity: string, endCity: string) => {
+    const visited: { [city: string]: boolean } = {};
+    const distances: { [city: string]: number } = {};
+    const previous: { [city: string]: string | null } = {};
 
+    routes.forEach(city => {
+        distances[city.name] = Infinity;
+        previous[city.name] = null;
+    });
+    distances[startCity] = 0;
+
+    while (true) {
+        let closestCity: string | null = null;
+        let closestDistance: number = Infinity;
+
+        for (const city of routes) {
+            if (!visited[city.name] && distances[city.name] < closestDistance) {
+                closestCity = city.name;
+                closestDistance = distances[city.name];
+            }
+        }
+
+        if (closestCity === null) {
+            break;
+        }
+
+        visited[closestCity] = true;
+
+        const currentCity = routes.find(city => city.name === closestCity);
+        if (currentCity) {
+            for (const connection of currentCity.connections) {
+                const neighborCity = routes.find(city => city.name === connection.name);
+                if (neighborCity && !visited[neighborCity.name]) {
+                    const distance = distances[closestCity] + connection.weight;
+                    if (distance < distances[neighborCity.name]) {
+                        distances[neighborCity.name] = distance;
+                        previous[neighborCity.name] = closestCity;
+                    }
+                }
+            }
+        }
+    }
+
+    const path: string[] = [];
+    let currentCity: string | null = endCity;
+    let weightSum = 0;
+    while (currentCity !== null) {
+        const previousCity = previous[currentCity];
+        const connection = routes.find(city => city.name === previousCity)?.connections.find(conn => conn.name === currentCity);
+        if (connection) {
+            weightSum += connection.weight;
+        }
+        path.unshift(currentCity);
+        currentCity = previous[currentCity];
+    }
+
+    return { path, weightSum };
 };
-
