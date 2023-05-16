@@ -31,6 +31,7 @@ Esse projeto tem como objetivo encontrar a menor e mais barata rota entre uma ci
 
 ## Vídeo de Apresentação
 
+![Clique aqui para acessar o nosso vídeo!!](./Apresentacao_Grafos2.mp4)
 
 ## Instalação 
 **Linguagem**: Typescript<br>
