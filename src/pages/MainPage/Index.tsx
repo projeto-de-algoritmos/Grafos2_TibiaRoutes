@@ -1,7 +1,9 @@
 import { dijkstra } from "../../utils/Graph";
 import Dropdown from "../../components/Dropdown/Index";
 import { useState } from "react";
-import { Box, ButtonText, Container, FindButton, SelectField, TextPrint } from "./Style";
+import { Box, ButtonText, Container, FindButton, OpenMap, SelectField, TextPrint, TibiaImage } from "./Style";
+import Modal from "../../components/Modal/Index";
+import Icon from "../../components/Icon/Icon";
 
 const MainPage = () => {
     const [startingCityLabel, setStartingCityLabel] = useState('Starting City');
@@ -10,6 +12,11 @@ const MainPage = () => {
     const [destination, setDestination] = useState('');
     const [route, setRoute] = useState('');
     const [totalPrice, setTotalPrice] = useState('');
+    const [modalStatus, setModalStatus] = useState(false);
+
+    const toggleModal = () => {
+        setModalStatus(!modalStatus);
+    }
 
     const selectStartingCity = (selectedStartingCity: string) => {
         setStartingCity(selectedStartingCity);
@@ -22,13 +29,28 @@ const MainPage = () => {
     }
 
     const findPath = () => {
-        const shortestPath = dijkstra(startingCity, destination);
-        setRoute('Shortest route: ' + shortestPath.path.join(' -> '));
-        setTotalPrice('Total cost: ' + shortestPath.weightSum + ' gps');
+        if (startingCity !== '' && destination !== '') {
+            const shortestPath = dijkstra(startingCity, destination);
+            setRoute('Shortest route: ' + shortestPath.path.join(' -> '));
+            setTotalPrice('Total cost: ' + shortestPath.weightSum + ' gps');
+        } else {
+            alert('select both cities before searching');
+        }
     }
 
     return (
         <Container>
+            <TibiaImage alt="Tibia Logo" src={require("../../assets/Tibia_Logo.png")}></TibiaImage>
+            <OpenMap onClick={toggleModal}>
+                <TextPrint>
+                    View Tibia map
+                </TextPrint>
+                <Icon
+                    icon={'map'}
+                    size={'40px'}
+                    color={'#5a2800'}
+                />
+            </OpenMap>
             <Box>
                 <SelectField>
                     <TextPrint>Find the best route from</TextPrint>
@@ -44,6 +66,7 @@ const MainPage = () => {
                 <TextPrint>{route}</TextPrint>
                 <TextPrint>{totalPrice}</TextPrint>
             </Box>
+            <Modal isShown={modalStatus} hide={toggleModal} />
         </Container>
     )
 }
